@@ -8,7 +8,13 @@ SYSCONFDIR?=$(PREFIX)/etc
 MANDIR?=$(PREFIX)/man
 DOCDIR?=$(DATAROOTDIR)/doc/wemux
 
-install:
+%: %.in
+	sed   's,$$(DOCDIR),$(DOCDIR),g' '$<'     | \
+	  sed 's,$$(MANDIR),$(MANDIR),g'          | \
+	  sed 's,$$(SYSCONFDIR),$(SYSCONFDIR),g'  | \
+	  > '$@'
+
+install: wemux man/wemux.1
 	$(INSTALL) -Dm 755 wemux $(DESTDIR)$(BINDIR)/
 	$(INSTALL) -Dm 644 man/wemux.1 $(DESTDIR)$(MANDIR)/man1/
 	$(INSTALL) -Dm 644 wemux.conf.example $(DESTDIR)$(DOCDIR)/
