@@ -1,5 +1,5 @@
 INSTALL=install
-PREFIX=/usr/local
+PREFIX?=/usr/local
 MANDIR?=/man/man1
 
 install:
