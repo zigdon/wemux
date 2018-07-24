@@ -302,6 +302,8 @@ Listing sessions can be disabled by setting \fBallow_session_list="false"\fR in 
 .SH "CONFIGURATION"
 There are a number of additional options that be configured in \fB$(SYSCONFDIR)/wemux\.conf\fR\. In most cases the only option that must be changed is the \fBhost_list\fR array\. To open your wemux configuration file, you can either open \fB$(SYSCONFDIR)/wemux\.conf\fR manually or run \fBwemux config\fR
 .
+An example configuration file is available at \fB$(DOCDIR)/wemux.conf.example\fR.
+.
 .SS "Host Mode"
 To have an account act as host, ensure that you have added their username to the \fB$(SYSCONFDIR)/wemux\.conf\fR file\'s \fBhost_list\fR array\.
 .
