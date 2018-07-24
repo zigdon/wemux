@@ -89,7 +89,7 @@ Kill the wemux session and remove the /tmp/wemux\-wemux socket\.
 Kick an SSH user from the server and remove their wemux pair sessions\.
 .
 .SS "wemux config"
-Open \fB/usr/local/etc/wemux\.conf\fR in your $EDITOR\.
+Open \fB$(SYSCONFDIR)/wemux\.conf\fR in your $EDITOR\.
 .
 .SS "wemux"
 When \fBwemux\fR is run without any arguments in host mode, it is just like running wemux start\. It will reattach to an existing wemux session if it exists, otherwise it will start a new session\.
@@ -193,7 +193,7 @@ wemux supports specifying the joining different wemux sessions via \fBwemux join
 wemux will remember the last session specified to in order to make reconnecting to the same session easy\. \fBwemux help\fR will output the currently specified session along with the wemux command list\.
 .
 .P
-Changing sessions can be enabled by setting \fBallow_session_change="true"\fR in \fB/usr/local/etc/wemux\.conf\fR
+Changing sessions can be enabled by setting \fBallow_session_change="true"\fR in \fB$(SYSCONFDIR)/wemux\.conf\fR
 .
 .SS "Joining Different wemux Sessions"
 To change the wemux session run \fBwemux join <session>\fR\. The name will be sanitized to contain no spaces or uppercase letters\.
@@ -297,13 +297,15 @@ Currently active wemux sessions:
 \fBwemux join\fR and \fBwemux stop\fR both accept either the name of a session or the number indicated next to the name in \fBwemux list\fR\.
 .
 .P
-Listing sessions can be disabled by setting \fBallow_session_list="false"\fR in \fB/usr/local/etc/wemux\.conf\fR
+Listing sessions can be disabled by setting \fBallow_session_list="false"\fR in \fB$(SYSCONFDIR)/wemux\.conf\fR
 .
 .SH "CONFIGURATION"
-There are a number of additional options that be configured in \fB/usr/local/etc/wemux\.conf\fR\. In most cases the only option that must be changed is the \fBhost_list\fR array\. To open your wemux configuration file, you can either open \fB/usr/local/etc/wemux\.conf\fR manually or run \fBwemux config\fR
+There are a number of additional options that be configured in \fB$(SYSCONFDIR)/wemux\.conf\fR\. In most cases the only option that must be changed is the \fBhost_list\fR array\. To open your wemux configuration file, you can either open \fB$(SYSCONFDIR)/wemux\.conf\fR manually or run \fBwemux config\fR
+.
+An example configuration file is available at \fB$(DOCDIR)/wemux.conf.example\fR.
 .
 .SS "Host Mode"
-To have an account act as host, ensure that you have added their username to the \fB/usr/local/etc/wemux\.conf\fR file\'s \fBhost_list\fR array\.
+To have an account act as host, ensure that you have added their username to the \fB$(SYSCONFDIR)/wemux\.conf\fR file\'s \fBhost_list\fR array\.
 .
 .IP "" 4
 .
