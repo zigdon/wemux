@@ -47,8 +47,10 @@ version="3.2.0"
 
 # Setup and Configuration Files.
 # Default settings, modify them in the $WEMUX_CONF file:
-IFS=$'\n' host_list=($(xargs -n 1 <<< "${WEMUX_HOST_LIST:-change_this_in_wemux_conf}"))
-IFS=$'\n' host_groups=($(xargs -n 1 <<< "$WEMUX_HOST_GROUPS"))
+export IFS=$'\n'
+host_list=($(xargs -n 1 <<< "${WEMUX_HOST_LIST:-change_this_in_wemux_conf}"))
+host_groups=($(xargs -n 1 <<< "$WEMUX_HOST_GROUPS"))
+unset IFS
 socket_prefix="${WEMUX_SOCKET_PREFIX:-/tmp/wemux}"
 options="${WEMUX_OPTIONS:--u}"
 allow_pair_mode="${WEMUX_ALLOW_PAIR_MODE:-true}"
