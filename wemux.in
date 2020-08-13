@@ -47,20 +47,20 @@ version="3.2.0"
 
 # Setup and Configuration Files.
 # Default settings, modify them in the $WEMUX_CONF file:
-host_list=(change_this_in_wemux_conf)
-host_groups=()
-socket_prefix="/tmp/wemux"
-options="-u"
-allow_pair_mode="true"
-allow_rogue_mode="true"
-default_client_mode="mirror"
-allow_kick_user="true"
-allow_server_change="false"
-default_server_name="wemux"
-allow_server_list="true"
-allow_user_list="true"
-announce_attach="true"
-announce_server_change="true"
+IFS=$'\n' host_list=($(xargs -n 1 <<< "${WEMUX_HOST_LIST:-change_this_in_wemux_conf}"))
+IFS=$'\n' host_groups=($(xargs -n 1 <<< "$WEMUX_HOST_GROUPS"))
+socket_prefix="${WEMUX_SOCKET_PREFIX:-/tmp/wemux}"
+options="${WEMUX_OPTIONS:--u}"
+allow_pair_mode="${WEMUX_ALLOW_PAIR_MODE:-true}"
+allow_rogue_mode="${WEMUX_ALLOW_ROGUE_MODE:-true}"
+default_client_mode="${WEMUX_DEFAULT_CLIENT_MODE:-mirror}"
+allow_kick_user="${WEMUX_ALLOW_KICK_USER:-true}"
+allow_server_change="${WEMUX_ALLOW_SERVER_CHANGE:-false}"
+default_server_name="${WEMUX_DEFAULT_SERVER_NAME:-wemux}"
+allow_server_list="${WEMUX_ALLOW_SERVER_LIST:-true}"
+allow_user_list="${WEMUX_ALLOW_USER_LIST:-true}"
+announce_attach="${WEMUX_ANNOUNCE_ATTACH:-true}"
+announce_server_change="${WEMUX_ANNOUNCE_SERVER_CHANGE:-true}"
 
 # Prevent users from changing their $USER env variable to become host.
 username=`whoami`
