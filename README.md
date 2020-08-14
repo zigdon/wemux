@@ -22,6 +22,14 @@ window (separate cursors) in the same tmux session.
 It features multi-server support as well as user listing
 and notifications when users attach/detach.
 
+To safely use wemux,
+**you need to be very careful to secure access to your machine**--anyone who has
+access to the socket (stored in `/tmp` and writable by anyone by default) can
+easily join your session and run arbitrary commands as your user, even if you
+started the server in mirror mode. You can use tools like SSHD's *ForceCommand*
+or directory permissions in combination with `$WEMUX_SOCKET_PREFIX` to
+partially mitigate such risks.
+
 ## How To Install
   **IMPORTANT**: Wemux requires tmux version >= 1.6
   
