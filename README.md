@@ -1,6 +1,11 @@
 ![wemux: Multi-User Tmux Sessions Made Easy](http://i.imgur.com/iOjcz.png)
 ********************************************************************************
 
+WARNING: This fork was just created to make a pull request; from what I can
+tell, [nbraud's fork](https://github.com/nbraud/wemux) of the
+[original wemux](https://github.com/zolrath/wemux) is the most current. If
+anyone knows otherwise, please open an issue and let me know.
+
 wemux enhances tmux to make multi-user terminal multiplexing both easier and
 more powerful. It allows users to host a wemux server and have clients join
 in either:
