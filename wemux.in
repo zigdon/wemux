@@ -9,7 +9,7 @@
 # in another window (separate cursors) in the hosts tmux session.
 #
 # To set a user as host add their username to the host_list in the configuration
-# file located at $WEMUX_CONF (default $SYSCONFDIR/wemux.conf)
+# file located at $WEMUX_CONF (default $(SYSCONFDIR)/wemux.conf)
 # Other configuations options are also located in $WEMUX_CONF
 #
 # For environments with multiple hosts running their own independent servers
@@ -70,9 +70,8 @@ username=`whoami`
 editor=${EDITOR:="vi"}
 
 # Load configuration options from $WEMUX_CONF
-# default location is $SYSCONFDIR/wemux.conf, or /usr/local/etc/wemux.conf if
-# $SYSCONFDIR isn't set
-: "${WEMUX_CONF:=${SYSCONFDIR:-/usr/local/etc}/wemux.conf}"
+# default location is $(SYSCONFDIR)/wemux.conf
+: "${WEMUX_CONF:=$(SYSCONFDIR)/wemux.conf}"
 [ -f "$WEMUX_CONF" ] && . "$WEMUX_CONF"
 
 # Sanitize server name, replace spaces and underscores with dashes.
