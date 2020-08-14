@@ -71,7 +71,7 @@ editor=${EDITOR:="vi"}
 
 # Load configuration options from $WEMUX_CONF
 # default location is $(SYSCONFDIR)/wemux.conf
-: "${WEMUX_CONF:=${$(SYSCONFDIR)/wemux.conf}"
+: "${WEMUX_CONF:=$(SYSCONFDIR)/wemux.conf}"
 [ -f "$WEMUX_CONF" ] && . "$WEMUX_CONF"
 
 # Sanitize server name, replace spaces and underscores with dashes.
