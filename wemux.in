@@ -9,8 +9,8 @@
 # in another window (separate cursors) in the hosts tmux session.
 #
 # To set a user as host add their username to the host_list in the configuration
-# file located at $(SYSCONFDIR)/wemux.conf
-# Other configuations options are also located in $(SYSCONFDIR)/wemux.conf
+# file located at $WEMUX_CONF (default $SYSCONFDIR/wemux.conf)
+# Other configuations options are also located in $WEMUX_CONF
 #
 # For environments with multiple hosts running their own independent servers
 # on the same machine wemux can join different servers with the wemux join
@@ -34,7 +34,7 @@
 # wemux users : List the currently attached wemux users.
 # wemux help  : Display the help screen.
 #
-# To enable multi-host commands, set allow_server_change="true" in wemux.conf
+# To enable multi-host commands, set allow_server_change="true" in $WEMUX_CONF
 # WEMUX SESSION COMMANDS: can be run by either host or client.
 # wemux join  : Join wemux server with supplied name.
 # wemux reset : Join default wemux server: wemux
@@ -69,8 +69,11 @@ username=`whoami`
 # Set $EDITOR default to vi if not configured on host machine.
 editor=${EDITOR:="vi"}
 
-# Load configuration options from $(SYSCONFDIR)/wemux.conf
-[ -f $(SYSCONFDIR)/wemux.conf ] && . $(SYSCONFDIR)/wemux.conf
+# Load configuration options from $WEMUX_CONF
+# default location is $SYSCONFDIR/wemux.conf, or /usr/local/etc/wemux.conf if
+# $SYSCONFDIR isn't set
+: "${WEMUX_CONF:=${SYSCONFDIR:-/usr/local/etc}/wemux.conf}"
+[ -f "$WEMUX_CONF" ] && . "$WEMUX_CONF"
 
 # Sanitize server name, replace spaces and underscores with dashes.
 # Remove all non alpha-numeric characters, convert to lowercase.
@@ -85,7 +88,7 @@ sanitize_server_name() {
 
 # Load the server name of last wemux server. If empty, set to 'wemux'.
 # Ensure server name is 'wemux' if allow_server_change is disabled.
-# If default_server_name is set in wemux.conf it will be used instead of 'wemux'
+# If default_server_name is set in $WEMUX_CONF it will be used instead of 'wemux'
 load_server_name() {
   if [ "$allow_server_change" == "true" ]; then
     if [ -f ~/.wemux_last_server ]; then
@@ -320,7 +323,7 @@ kill_server_successful() {
 }
 
 # Announce when user attaches/detaches from server.
-# Can be disabled by changing announce_attach to false in $(SYSCONFDIR)/wemux.conf
+# Can be disabled by changing announce_attach to false in $WEMUX_CONF
 # The first argument specifies the mode the user is attaching in for the message
 # All additional arguments get wrapped in the attach/detach messages.
 announce_connection() {
@@ -335,7 +338,7 @@ announce_connection() {
 }
 
 # Announces when a user joins/changes their server.
-# Can be disabled by changing announce_server_change to false in $(SYSCONFDIR)/wemux.conf
+# Can be disabled by changing announce_server_change to false in $WEMUX_CONF
 # Change server name for server, or display server name if no argument is given.
 change_server() {
   if [ "$allow_server_change" == "true" ]; then
@@ -444,7 +447,7 @@ display_version() {
   echo "To check for a newer version visit: http://www.github.com/zolrath/wemux"
 }
 
-# Host mode, used when user is listed in the host_list array in $(SYSCONFDIR)/wemux.conf
+# Host mode, used when user is listed in the host_list array in $WEMUX_CONF
 host_mode() {
   # Start the server if it doesn't exist, otherwise reattach.
   start_server() {
@@ -551,8 +554,8 @@ host_mode() {
       status_users)       status_users;;
       display_users)      display_users;;
       version|v)          display_version;;
-      conf*|c)            $editor $(SYSCONFDIR)/wemux.conf;;
-      *)                  if ! $wemux "$@"; then
+      conf*|c)            $editor "$WEMUX_CONF";;
+      *)                  if ! client_mode "$@"; then
                             echo "To see a list of wemux commands enter 'wemux help'"
                             exit 127
                           fi;;
@@ -560,7 +563,7 @@ host_mode() {
   fi
 }
 
-# Client Mode, used when user is NOT listed in the host_list in $(SYSCONFDIR)/wemux.conf
+# Client Mode, used when user is NOT listed in the host_list in $WEMUX_CONF
 client_mode() {
   # Mirror mode, allows the user to view wemux server in read only mode.
   mirror_mode() {
@@ -636,10 +639,10 @@ client_mode() {
   }
 
   smart_reattach() {
-    # If default_client_mode has been set to "rogue" in wemux.conf:
+    # If default_client_mode has been set to "rogue" in $WEMUX_CONF:
     if [ "$default_client_mode" == "rogue" ] && [ "$allow_rogue_mode" == "true" ]; then
       announce_connection "rogue" rogue_mode
-    # If default_client_mode has been set to "pair" in wemux.conf:
+    # If default_client_mode has been set to "pair" in $WEMUX_CONF:
     elif [ "$default_client_mode" == "pair" ] && [ "$allow_pair_mode" == "true" ]; then
       announce_connection "pair" pair_mode
     elif has_rogue_session && [ "$allow_rogue_mode" == "true" ]; then
