@@ -662,6 +662,8 @@ client_mode() {
     smart_reattach
   else
     case "$1" in
+      attach|a)      echo "To see a list of wemux commands enter 'wemux help'"
+                     exit 127;; # a still works
       mirror|m)      announce_connection "mirror" mirror_mode;;
       pair|p)        announce_connection "pair" pair_mode;;
       rogue|r)       shift; announce_connection "rogue" rogue_mode $@;;
