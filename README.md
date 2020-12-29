@@ -52,12 +52,9 @@ and notifications when users attach/detach.
 
   Git clone this repo.
 
-    git clone git://github.com/zolrath/wemux.git /usr/local/share/wemux
-
-  Symlink the `wemux` file into your $PATH via `/usr/local/bin/`,
-  being sure to use the full path.
-
-    ln -s /usr/local/share/wemux/wemux /usr/local/bin/wemux
+    git clone git://github.com/zolrath/wemux.git
+    cd wemux
+    sudo make install
 
   **IMPORTANT**: Copy the `wemux.conf.example` file to `/usr/local/etc/wemux.conf`
 
@@ -78,6 +75,9 @@ and notifications when users attach/detach.
   Use `wemux start` to start a wemux server, chmod /tmp/wemux-wemux to 1777 so
   that other users may connect to it, and attach to it.  If a wemux server
   already exists, it will attach to it instead.
+#### wemux start_detached
+  Use `wemux start_detached` to start a wemux server and stay detached from it.
+  This does nothing if a server is already running.
 #### wemux attach
   Use `wemux attach` to attach to an existing wemux server.
 #### wemux stop
