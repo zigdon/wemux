@@ -14,6 +14,10 @@
 ## All users in any of the groups in host_groups will also use wemux in host mode.
 ## example: host_groups=(wheel wemux)
 
+## Should servers start in multi-user mode. If false, only the user who started
+## the server can connect to it.
+# start_multi_user="true"
+
 ####### CLIENT OPTIONS #######
 
 ## Allow users to attach to the wemux server in pair mode.

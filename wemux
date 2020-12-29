@@ -43,7 +43,7 @@
 ###############################################################################
 
 # Current wemux version.
-version="3.2.0"
+version="3.2.0-zigdon"
 
 # Setup and Configuration Files.
 # Default settings, modify them in the /usr/local/etc/wemux.conf file:
@@ -51,6 +51,7 @@ host_list=(change_this_in_wemux_conf)
 host_groups=()
 socket_prefix="/tmp/wemux"
 options="-u"
+start_multi_user="true"
 allow_pair_mode="true"
 allow_rogue_mode="true"
 default_client_mode="mirror"
@@ -66,6 +67,10 @@ announce_server_change="true"
 username=`whoami`
 # Set $EDITOR default to vi if not configured on host machine.
 editor=${EDITOR:="vi"}
+
+# Load user configuration options from ~/.wemux.conf. System level options will
+# override these.
+[ -f $HOME/.wemux.conf ] && . $HOME/.wemux.conf
 
 # Load configuration options from /usr/local/etc/wemux.conf
 [ -f /usr/local/etc/wemux.conf ] && . /usr/local/etc/wemux.conf
@@ -381,9 +386,13 @@ host_mode() {
   start_server() {
     if ! session_exists; then
       $wemux new-session -d -s $server
-      # Open tmux socket to all users to allow clients to connect.
-      chmod 1777 $socket
-      echo "wemux server started on '$server'."
+      if [ "$start_multi_user" == "true" ]; then
+        # Open tmux socket to all users to allow clients to connect.
+        chmod 1777 $socket
+        echo "wemux multi-user server started on '$server'."
+      else
+        echo "wemux single-user server started on '$server'."
+      fi
     fi
     reattach
   }
