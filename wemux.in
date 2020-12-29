@@ -702,8 +702,11 @@ groups_for_user() {
   echo $(groups $username | awk -F: "{print \$NF}");
 }
 
-# Check if current user is listed in the host_list.
+# Check if we're in single user mode, or if the current user is listed in the
+# host_list.
 user_is_a_host() {
+  [[ "$start_multi_user" != "true" ]] && return 0
+
   for user in "${host_list[@]}"; do
     [[ "$user" == "$username" ]] && return 0
   done
