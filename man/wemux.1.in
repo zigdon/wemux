@@ -74,6 +74,9 @@ wemux enhances tmux to make multi\-user terminal multiplexing both easier and mo
 .P
 It features multi\-session support as well as user listing and notifications when users attach/detach\.
 .
+.P
+To safely use wemux, \fByou need to be very careful to secure access to your machine\fR--anyone who has access to the socket (stored in \fB/tmp\fR and writable by anyone by default) can easily join your session and run arbitrary commands as your user, even if you started the server in mirror mode\. You can use tools like SSHD's \fIForceCommand\fR or directory permissions in combination with \fB$WEMUX_SOCKET_PREFIX\fR to partially mitigate such risks\.
+.
 .SH "HOST COMMANDS"
 .
 .SS "wemux start"
@@ -89,7 +92,7 @@ Kill the wemux session and remove the /tmp/wemux\-wemux socket\.
 Kick an SSH user from the server and remove their wemux pair sessions\.
 .
 .SS "wemux config"
-Open \fB$(SYSCONFDIR)/wemux\.conf\fR in your $EDITOR\.
+Open \fB$WEMUX_CONF\fR (\fB$(SYSCONFDIR)/wemux\.conf\fR by default) in your \fB$EDITOR\fR\.
 .
 .SS "wemux"
 When \fBwemux\fR is run without any arguments in host mode, it is just like running wemux start\. It will reattach to an existing wemux session if it exists, otherwise it will start a new session\.
@@ -118,7 +121,7 @@ If the client does not have an existing rogue session it will attach to the wemu
 If the client has already started a wemux rogue mode session, it will reattach to the session in rogue mode\.
 .
 .IP "\(bu" 4
-By setting \fBdefault_client_mode="rogue"\fR in \fBwemux\.conf\fR this can be changed to always join in pair mode, even if a pair session doesn\'t already exist\.
+By setting \fBdefault_client_mode="rogue"\fR in \fB$WEMUX_CONF\fR or by setting the environment variable \fBWEMUX_DEFAULT_CLIENT_MODE="rogue"\fR this can be changed to always join in pair mode, even if a pair session doesn\'t already exist\.
 .
 .IP "" 0
 .
@@ -181,7 +184,7 @@ bind t run\-shell \'wemux display_users\'
 Note that the tmux prefix should be pressed before t to activate the command\.
 .
 .P
-User listing can be disabled by setting \fBallow_user_list="false"\fR in \fBwemux\.conf\fR
+User listing can be disabled by setting \fBallow_user_list="false"\fR in \fB$WEMUX_CONF\fR or by setting the environment variable \fBWEMUX_ALLOW_USER_LIST="false"\fR
 .
 .SS "Short\-form Commands"
 All commands have a short form\. s for start, a for attach, p for pair etc\. For a complete list, type \fBwemux help\fR (or \fBwemux h\fR)
@@ -193,7 +196,7 @@ wemux supports specifying the joining different wemux sessions via \fBwemux join
 wemux will remember the last session specified to in order to make reconnecting to the same session easy\. \fBwemux help\fR will output the currently specified session along with the wemux command list\.
 .
 .P
-Changing sessions can be enabled by setting \fBallow_session_change="true"\fR in \fB$(SYSCONFDIR)/wemux\.conf\fR
+Changing sessions can be enabled by setting \fBallow_session_change="true"\fR in \fB$WEMUX_CONF\fR or by setting the environment varialbe \fBWEMUX_ALLOW_SESSION_CHANGE="true"\fR
 .
 .SS "Joining Different wemux Sessions"
 To change the wemux session run \fBwemux join <session>\fR\. The name will be sanitized to contain no spaces or uppercase letters\.
@@ -260,7 +263,7 @@ Current wemux server: wemux
 In order to easily return to the default session you can run \fBwemux reset\fR
 .
 .SS "wemux reset"
-Joins the default wemux session: wemux (or value of default_session_name in wemux\.conf)
+Joins the default wemux session: wemux (or value of default_session_name in \fB$WEMUX_CONF\fR or value of the environment variable \fBWEMUX_DEFAULT_SESSION_NAME\fR)
 .
 .IP "" 4
 .
@@ -297,15 +300,15 @@ Currently active wemux sessions:
 \fBwemux join\fR and \fBwemux stop\fR both accept either the name of a session or the number indicated next to the name in \fBwemux list\fR\.
 .
 .P
-Listing sessions can be disabled by setting \fBallow_session_list="false"\fR in \fB$(SYSCONFDIR)/wemux\.conf\fR
+Listing sessions can be disabled by setting \fBallow_session_list="false"\fR in \fB$WEMUX_CONF\fR or by setting the environment variable \fBWEMUX_ALLOW_SESSION_LIST="false"\fR
 .
 .SH "CONFIGURATION"
-There are a number of additional options that be configured in \fB$(SYSCONFDIR)/wemux\.conf\fR\. In most cases the only option that must be changed is the \fBhost_list\fR array\. To open your wemux configuration file, you can either open \fB$(SYSCONFDIR)/wemux\.conf\fR manually or run \fBwemux config\fR
+There are a number of additional options that be configured in \fB$WEMUX_CONF\fR (\fB$(SYSCONFDIR)/wemux\.conf\fR by default)\. In most cases the only option that must be changed is the \fBhost_list\fR array\. To open your wemux configuration file, you can either open \fB$WEMUX_CONF\fR manually or run \fBwemux config\fR\. You can also set environment variables to control configuration, although these have lower precedence than the configuration file; the configuration file can be ignored by setting \fB$WEMUX_CONF\fR to the empty string, e.g. `\fBexport WEMUX_CONF=\fR`\.
 .
 An example configuration file is available at \fB$(DOCDIR)/wemux.conf.example\fR.
 .
 .SS "Host Mode"
-To have an account act as host, ensure that you have added their username to the \fB$(SYSCONFDIR)/wemux\.conf\fR file\'s \fBhost_list\fR array\.
+To have an account act as host, ensure that you have added their username to the \fB$WEMUX_CONF\fR file\'s \fBhost_list\fR array or to the environment variable \fBWEMUX_HOST_LIST\fR, a space-delimited list of user names (whitespace can be protected by quotes)\. If \fBhost_list\fR is set in \fB$WEMUX_CONF\fR, \fBWEMUX_HOST_LIST\fR is ignored\.
 .
 .IP "" 4
 .
@@ -313,39 +316,41 @@ To have an account act as host, ensure that you have added their username to the
 
 host_list=(zolrath hostusername brocksamson)
 .
+WEMUX_HOST_LIST="zolrath hostusername brocksamson"
+.
 .fi
 .
 .IP "" 0
 .
 .SS "Pair Mode"
-Pair mode can be disabled, only allowing clients to attach to the session in mirror mode by setting \fBallow_pair_mode="false"\fR
+Pair mode can be disabled, only allowing clients to attach to the session in mirror mode by setting \fBallow_pair_mode="false"\fR or by setting the environment varialbe \fBWEMUX_ALLOW_PAIR_MODE="false"\fR
 .
 .SS "Rogue Mode"
-Rogue mode can be disabled, only allowing clients to attach to the server in mirror or pair mode by setting \fBallow_rogue_mode="false"\fR
+Rogue mode can be disabled, only allowing clients to attach to the server in mirror or pair mode by setting \fBallow_rogue_mode="false"\fR or by setting the environment varialbe \fBWEMUX_ALLOW_ROGUE_MODE="false"\fR
 .
 .SS "Default Client Mode"
-When clients enter \'wemux\' with no arguments by default it will first attempt to join an existing rogue mode session\. If there is no rogue session it will start in pair mode\. By setting default_client_mode to "rogue", \'wemux\' with no arguments will always join a rogue mode session, even if it has to create it\.
+When clients enter \'wemux\' with no arguments by default it will first attempt to join an existing rogue mode session\. If there is no rogue session it will start in pair mode\. By setting \fBdefault_client_mode\fR or the environment variable \fBWEMUX_DEFAULT_CLIENT_MODE\fR to "rogue", \'wemux\' with no arguments will always join a rogue mode session, even if it has to create it\.
 .
 .P
-This can be changed by setting \fBdefault_client_mode="rogue"\fR
+This can be changed by setting \fBdefault_client_mode="rogue"\fR or by setting the environment variable \fBWEMUX_DEFAULT_CLIENT_MODE="rogue"\fR
 .
 .SS "Default Session Name"
-The default wemux session name will be used with \fBwemux reset\fR and when \fBallow_session_change\fR is not enabled in \fBwemux\.conf\fR\.
+The default wemux session name will be used with \fBwemux reset\fR and when \fBallow_session_change\fR is not enabled in \fB$WEMUX_CONF\fR\.
 .
 .P
-This can be changed by setting \fBdefault_session_name="customname"\fR
+This can be changed by setting \fBdefault_session_name="customname"\fR or by setting the environment variable \fBWEMUX_DEFAULT_SESSION_NAME="customname"\fR
 .
 .SS "Changing Sessions"
-The ability to change sessions can be enabled by setting \fBallow_session_change="true"\fR
+The ability to change sessions can be enabled by setting \fBallow_session_change="true"\fR or by setting the environment variable \fBWEMUX_ALLOW_SESSION_CHANGE="true"\fR
 .
 .SS "Listing Sessions"
-Listing sessions can be disabled by setting \fBallow_session_list="false"\fR
+Listing sessions can be disabled by setting \fBallow_session_list="false"\fR or by setting the environment variable \fBWEMUX_ALLOW_SESSION_LIST="false"\fR
 .
 .SS "Listing Users"
-Listing users can be disabled by setting \fBallow_user_list="false"\fR in \fBwemux\.conf\fR
+Listing users can be disabled by setting \fBallow_user_list="false"\fR in \fB$WEMUX_CONF\fR or by setting the environment varialbe \fBWEMUX_ALLOW_USER_LIST="false"\fR
 .
 .SS "Kicking SSH Users"
-Kicking SSH users from the server can be disabled by setting \fBallow_kick_user="false"\fR in \fBwemux\.conf\fR
+Kicking SSH users from the server can be disabled by setting \fBallow_kick_user="false"\fR in \fB$WEMUX_CONF\fR or by setting the environment varialble \fBWEMUX_ALLOW_KICK_USER="false"\fR
 .
 .SS "Announcements"
 When a user joins a session in either mirror or pair mode, a message is displayed to all currently attached users:
@@ -362,7 +367,7 @@ csagan has detached\.
 .IP "" 0
 .
 .P
-This can be disabled by setting \fBannounce_attach="false"\fR
+This can be disabled by setting \fBannounce_attach="false"\fR or by setting the environment variable \fBWEMUX_ANNOUNCE_ATTACH="false"\fB
 .
 .P
 In addition, when a user switches from one session to another via the \fBwemux join <sessionname>\fR command, their movement is displayed similarly to the attach messages\.
@@ -394,7 +399,7 @@ csagan has joined this session\.
 .IP "" 0
 .
 .P
-This can be disabled by setting \fBannounce_session_change="false"\fR
+This can be disabled by setting \fBannounce_session_change="false"\fR or by setting the environment variable \fBWEMUX_ANNOUNCE_SESSION_CHANGE="false"\fR
 .
 .SS "Automatic SSH Client Modes"
 To make an SSHed user start in a wemux mode automatically, add one of the following lines to the users \fB\.bash_profile\fR or \fB\.zshrc\fR
