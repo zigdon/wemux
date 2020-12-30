@@ -42,8 +42,8 @@
 
 ###############################################################################
 
-# Current wemux version.
-version="3.2.0-zigdon"
+# Current wemux version. 3.2.0 with support for start_multi_user setting.
+version="3.2.0-multi"
 
 # Setup and Configuration Files.
 # Default settings, modify them in the $WEMUX_CONF file:
