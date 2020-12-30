@@ -4,7 +4,9 @@
 WARNING: This fork was just created to make a pull request; from what I can
 tell, [nbraud's fork](https://github.com/nbraud/wemux) of the
 [original wemux](https://github.com/zolrath/wemux) is the most current. If
-anyone knows otherwise, please open an issue and let me know.
+anyone knows otherwise, please open an issue and let me know. This particular
+fork includes patches from [mjg0's fork](https://github.com/mjg0/wemux/) as
+well.
 
 wemux enhances tmux to make multi-user terminal multiplexing both easier and
 more powerful. It allows users to host a wemux server and have clients join
@@ -22,13 +24,17 @@ window (separate cursors) in the same tmux session.
 It features multi-server support as well as user listing
 and notifications when users attach/detach.
 
-To safely use wemux,
+When running in multi-user mode, to safely use wemux,
 **you need to be very careful to secure access to your machine**--anyone who has
 access to the socket (stored in `/tmp` and writable by anyone by default) can
 easily join your session and run arbitrary commands as your user, even if you
 started the server in mirror mode. You can use tools like SSHD's *ForceCommand*
 or directory permissions in combination with `$WEMUX_SOCKET_PREFIX` to
 partially mitigate such risks.
+
+An alternative is to set `start_multi_user` to `false`, in which case only the
+user who starts the server can connect to it. In that case, wemux has the same
+security risks as normal tmux does.
 
 ## How To Install
   **IMPORTANT**: Wemux requires tmux version >= 1.6
