@@ -265,6 +265,13 @@ security risks as normal tmux does.
 
     host_list=(zolrath hostusername brocksamson)
 
+### Multi-user mode vs Single-user mode
+  By default, wemux is setup such that every user on the system can connect to
+  the server. If the setting `start_multi_user` is set to `false`, only the
+  user starting the server can connect to it (similar to the usual tmux
+  behaviour). In that case, every user is considered a host, regardless of the
+  `host_list` setting.
+
 ### Pair Mode
   Pair mode can be disabled, only allowing clients to attach to the server in
   mirror mode by setting `allow_pair_mode="false"`
